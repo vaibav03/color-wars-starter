@@ -220,9 +220,10 @@ def handler(game):
             self.reply(404, {"detail": "not found"})
 
         def do_POST(self):
-            if self.path == "/cw/join":                    # any Miro token joins as you0
-                if not self.body().get("miro_token"):
-                    return self.reply(400, {"detail": "send your Miro token as miro_token"})
+            if self.path == "/cw/join":                    # any Claude account or Miro token joins as you0
+                got = self.body()
+                if not (got.get("miro_token") or got.get("account")):
+                    return self.reply(400, {"detail": "log in to Claude Code first"})
                 return self.reply(200, {"key": "cwk_" + "f" * 43, "alias": "you0", "name": "You"})
             if not self.keyed():
                 return

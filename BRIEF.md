@@ -100,37 +100,15 @@ Three decisions are yours and affect the result.
 
 ## Join the game
 
-You join with your own Miro account, as in the course's Miro game. You create a Miro app, install it to the class team, and copy the access token it gives you. `bot.py --login` sends the token to the game server once. The server asks Miro who you are, checks that you are in the class team, gives you a seat and a player key, and `bot.py` saves the key in `.env`. Join before BUILD starts: the server makes the pairings from everyone who joined. Allow 5 minutes. In Claude Code, `/join` walks you through these steps.
-
-**Create the app**
-
-1. Sign in to Miro. Click your avatar, then select **Settings**.
-2. Open the **Your apps** tab. Click **+ Create new app**.
-3. Enter an app name, for example `color-wars-yourname`.
-4. Leave **Expire user authorization token** cleared.
-5. Click **Create app**.
-
-**Set permissions**
-
-1. On the app settings page, find the permissions list.
-2. Select `boards:read` and `identity:read`. Select nothing else.
-
-**Install the app and copy the token**
-
-1. At the bottom of the app settings page, click **Install app and get OAuth token**.
-2. In **Select a team**, choose the class team, **ASU CIS**.
-3. Click **Install & authorize**.
-4. Miro shows your access token. Copy it. Click **Close**.
-
-**Join**
+You join as your Claude Code account: the ASU account you already use for the course. Nothing else to create. Allow 1 minute.
 
 1. Open a terminal in the starter kit folder.
-2. Copy `.env.example` to `.env`. Put your token after `MIRO_TOKEN=` and save the file. You or your AI assistant may do this.
+2. Check that Claude Code is logged in with your ASU account (run `claude`, then `/status`; if not, `/login`).
 3. Run `python3 bot.py --login`. It prints `joined as`, your name on the dashboard, and the link to watch your match.
 4. Run `python3 bot.py --check`. It prints `connected`; your color and crystal appear once BUILD has made the pairings.
 5. Run `python3 bot.py --watch` and leave it running in its own terminal. It reads the phase every 5 seconds and writes `.sdlc/arena-phase.json`.
 
-The server uses the Miro token only to learn who you are; it does not store it. The player key identifies you to the game server: the same Miro account always gets the same key, so `--login` again is safe. Use both for this course only and do not share them. Git ignores `.env`, and the script never prints the token or the key. After the session, delete the app in **Your apps**.
+Join before BUILD starts: the server makes the pairings from everyone who joined. `--login` reads your account's id, email and name from Claude Code's settings on this computer and sends them to the game server, which gives you a player key; `bot.py` saves the key in `.env`. The same account always gets the same key, so `--login` again is safe. Do not share the key. Git ignores `.env`, and the script never prints the key. In Claude Code, `/join` does these steps with you.
 
 ## Test in three levels
 
@@ -144,7 +122,7 @@ The server uses the Miro token only to learn who you are; it does not store it. 
 
 | Command | What it does |
 | --- | --- |
-| `python3 bot.py --login` | Joins with `MIRO_TOKEN` from `.env` and saves your player key in `.env` |
+| `python3 bot.py --login` | Joins as your Claude Code account and saves your player key in `.env` |
 | `python3 bot.py --check` | Prints `connected`, your color and your crystal |
 | `python3 bot.py --practice` | In TESTING only: sends one practice move and prints `practice passed` |
 | `python3 bot.py --phase` | Prints the phase once |
@@ -186,9 +164,8 @@ Each row is a failure seen in practice rounds or one the setup steps can cause. 
 | What you see | Cause | Fix |
 | --- | --- | --- |
 | `Set your player key first` | The script found no key in `.env` | Run `python3 bot.py --login` |
-| `Put your Miro token in .env first` | `.env` has no `MIRO_TOKEN=` line | Copy `.env.example` to `.env` and put your Miro token after `MIRO_TOKEN=` |
-| `join failed: Miro refused this token` | The token is wrong or the app was deleted | Copy the token again from **Your apps** |
-| `join failed: ... not for the class team` | The app is installed to another team | Install the app to **ASU CIS** and copy the new token |
+| `Log in to Claude Code first` | Claude Code is not logged in on this computer | Run `claude`, type `/login`, sign in with your ASU account |
+| `join failed: use your @asu.edu account` | Claude Code is logged in with another account | `/logout`, then `/login` with your ASU account |
 | `join failed: joining is closed` | BUILD has started | Ask the instructor |
 | `HTTP 401` or `HTTP 403` on `--check` | The key is wrong or not loaded | Run `python3 bot.py --login` again |
 | `HTTP 403` on a move, then `Laptop play is over` | The move is not for your current match, or the round robin has started | The script stops. In the round robin this is expected: your upload plays. In round 0, run `python3 bot.py` again |

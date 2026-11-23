@@ -20,7 +20,7 @@ The kit needs Python 3.12 and nothing else. The arena runs Python 3.12; `bot.py`
 | `simulate.py` | No | Plays your strategy against a sample opponent, offline |
 | `colorwars.py` | No | Game rules and the helpers your strategy may import |
 | `tools/fake_server.py` | No | A local game server for testing `bot.py` without the network |
-| `.env` | Yes, once | Your Miro token (`MIRO_TOKEN=`); `python3 bot.py --login` adds your player key |
+| `.env` | No | `python3 bot.py --login` writes your player key here |
 | `.sdlc/` | No | Written by the bot: match phase, recorded hashes, run log |
 
 Your color, your crystal and your opponent's crystal come from the server. You do not set them.
@@ -66,7 +66,7 @@ It prints each check and a live link to the game.
 ## Connect to the game server
 
 1. Get your player key from the instructor. It starts with `cwk_`.
-2. Put your Miro token in `.env` (`MIRO_TOKEN=...`, see BRIEF.md, Join the game) and run `python3 bot.py --login`. It joins the game and writes your player key into `.env`. Git ignores `.env`, and the bot never prints the token or the key.
+2. Run `python3 bot.py --login`. It joins the game as your Claude Code account and writes your player key into `.env`. Git ignores `.env`, and the bot never prints the key.
 3. Run `python3 bot.py --check`. It prints `connected`, your color and your crystal squares.
 4. In TESTING, run `python3 bot.py --practice`. It sends one legal move next to your crystal and confirms the server accepts it.
 5. Run `python3 bot.py --phase` at any time to print the match phase.
@@ -76,7 +76,7 @@ It prints each check and a live link to the game.
 
 | Command | What it does |
 | --- | --- |
-| `bot.py --login` | Joins with your Miro token and saves your player key in `.env` |
+| `bot.py --login` | Joins as your Claude Code account and saves your player key in `.env` |
 | `bot.py --check` | Reads your match and prints `connected`, your color, your crystal and the link to watch your match |
 | `bot.py --practice` | In TESTING: one practice move; prints `practice passed` |
 | `bot.py --phase` | Prints the phase and the banner once |

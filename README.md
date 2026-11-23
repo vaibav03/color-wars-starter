@@ -65,9 +65,9 @@ It prints each check and a live link to the game.
 
 ## Connect to the game server
 
-1. Get your player key from the instructor. It starts with `cwk_`.
+1. Log in to Claude Code with your ASU account (you use it for the course already).
 2. Run `python3 bot.py --login`. It joins the game as your Claude Code account and writes your player key into `.env`. Git ignores `.env`, and the bot never prints the key.
-3. Run `python3 bot.py --check`. It prints `connected`, your color and your crystal squares.
+3. Run `python3 bot.py --check`. It prints `connected`; your color and crystal squares appear once BUILD has made the pairings.
 4. In TESTING, run `python3 bot.py --practice`. It sends one legal move next to your crystal and confirms the server accepts it.
 5. Run `python3 bot.py --phase` at any time to print the match phase.
 6. Start `python3 bot.py --watch` when you arrive and leave it running. It keeps `.sdlc/arena-phase.json` up to date.
@@ -77,7 +77,7 @@ It prints each check and a live link to the game.
 | Command | What it does |
 | --- | --- |
 | `bot.py --login` | Joins as your Claude Code account and saves your player key in `.env` |
-| `bot.py --check` | Reads your match and prints `connected`, your color, your crystal and the link to watch your match |
+| `bot.py --check` | Prints `connected`; from BUILD on also your color, your crystal and the link to watch your match |
 | `bot.py --practice` | In TESTING: one practice move; prints `practice passed` |
 | `bot.py --phase` | Prints the phase and the banner once |
 | `bot.py --watch` | Reads the phase every 5 seconds and keeps `.sdlc/arena-phase.json` fresh, until Ctrl-C |

@@ -180,7 +180,7 @@ def join_with_miro(config_path, server=None):
                                       quiet=(400, 401, 403, 404, 409))
         except RuntimeError as e:
             print(f"warning: the practice arena did not register you ({e}); --dry-run may fail", file=sys.stderr)
-    print(f"joined as {res.get('name') or res['alias']}. Your name on the dashboard: {res['alias']}")
+    print(f"joined as {res.get('name') or res['alias']} | your name on the dashboard: {res['alias']}")
     print("player key saved in .env. Next: python3 bot.py --check")
     print("watch your match:", my_page(cfg, res["alias"]))
 

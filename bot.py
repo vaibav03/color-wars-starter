@@ -159,6 +159,45 @@ def load_key():
     return load_env("PLAYER_KEY")
 
 
+def plugin_group():
+    """The course plugin's group (A or B) on this computer, or None. Read from the Claude Code settings that hold
+    the sdlc plugin's options, then from the plugin's saved state. Never printed: the student does not see it."""
+    home = os.path.expanduser("~")
+    claude = os.environ.get("CLAUDE_CONFIG_DIR") or os.path.join(home, ".claude")
+    files = [os.path.join(claude, "settings.json"),
+             "/Library/Application Support/ClaudeCode/managed-settings.json", "/etc/claude-code/managed-settings.json",
+             r"C:\Program Files\ClaudeCode\managed-settings.json"]
+    for d in ("/Library/Application Support/ClaudeCode/managed-settings.d", "/etc/claude-code/managed-settings.d"):
+        if os.path.isdir(d):
+            files += [os.path.join(d, f) for f in sorted(os.listdir(d)) if f.endswith(".json")]
+    for path in files:
+        try:
+            with open(path) as f:
+                configs = json.load(f).get("pluginConfigs") or {}
+        except (OSError, ValueError, AttributeError):
+            continue
+        for name, conf in configs.items():
+            arm = ((conf or {}).get("options") or {}).get("setup") if name.startswith("sdlc@") else None
+            if arm in ("A", "B"):
+                return arm
+    found = []                                         # the plugin's saved session config: {"arm": "A", ...}
+    data = os.path.join(claude, "plugins", "data")
+    for root, _dirs, names in os.walk(data) if os.path.isdir(data) else ():
+        if "sdlc" not in os.path.relpath(root, data).split(os.sep)[0]:
+            continue
+        for n in names:
+            path = os.path.join(root, n)
+            try:
+                if n.endswith(".json") and os.path.getsize(path) < 1_000_000:
+                    with open(path) as f:
+                        arm = json.load(f).get("arm")
+                    if arm in ("A", "B"):
+                        found.append((os.path.getmtime(path), arm))
+            except (OSError, ValueError, AttributeError):
+                continue
+    return max(found)[1] if found else None
+
+
 def join_with_miro(config_path, server=None):
     """Send the Miro token to the game server (and the practice arena), save the player key it returns."""
     token = load_env("MIRO_TOKEN")
@@ -166,7 +205,8 @@ def join_with_miro(config_path, server=None):
         sys.exit("Put your Miro token in .env first: a line MIRO_TOKEN=... (BRIEF.md, Join the game).")
     cfg = load_config(config_path, server)
     try:
-        res = Server(cfg["server_url"], "").call("POST", "/cw/join", {"miro_token": token}, auth=False, tries=3,
+        body = {"miro_token": token, "group": plugin_group()}
+        res = Server(cfg["server_url"], "").call("POST", "/cw/join", body, auth=False, tries=3,
                                                  quiet=(400, 401, 403, 404, 409))
     except HttpError as e:
         sys.exit(f"join failed: {e.detail or e}")
@@ -176,7 +216,7 @@ def join_with_miro(config_path, server=None):
     practice = cfg.get("practice_url", "")
     if practice.startswith(("http://", "https://")) and practice.rstrip("/") != cfg["server_url"].rstrip("/"):
         try:                                           # same key there; the game still works if this fails
-            Server(practice, "").call("POST", "/cw/join", {"miro_token": token}, auth=False, tries=2,
+            Server(practice, "").call("POST", "/cw/join", body, auth=False, tries=2,
                                       quiet=(400, 401, 403, 404, 409))
         except RuntimeError as e:
             print(f"warning: the practice arena did not register you ({e}); --dry-run may fail", file=sys.stderr)

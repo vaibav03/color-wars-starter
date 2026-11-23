@@ -4,23 +4,22 @@ Updated 2026-11-22
 
 ## Purpose
 
-You build a script that plays Color Wars against one opponent for 10 minutes with no human input. You write the strategy. We supply the code that connects to the game server, reads the board, and sends your moves. The server is the referee. The Miro boards show every match, and you can only view them.
+You build a script that plays Color Wars against one opponent at a time with no human input. You write the strategy. We supply the code that connects to the game server, reads the board, and sends your moves. The server is the referee. The Miro boards show every match, and you can only view them.
 
 You work with an AI coding assistant for the whole session. Your result depends on two things: how well your strategy chooses squares, and whether your script runs for the full match without stopping.
 
 ## Timeline
 
-The session runs about 2.5 hours. The first 40 minutes have three phases; then your uploaded strategy plays a round robin against every other student. The instructor announces the start and end of each phase.
+The instructor starts the session when everyone has joined. Build and testing come first; then all matches together take 20 minutes. Round 0 runs on your laptop; in the later rounds your uploaded strategy plays a new opponent each round. The dashboard shows each phase and how long it has left.
 
 | Phase | Minutes | What you do | What you must not do |
 | --- | --- | --- | --- |
 | Build | 0 to 20 | Write your strategy with your AI assistant. Test it in the offline simulator. Upload it with `python3 bot.py --submit`. | Send moves to the game server. |
 | Test and deploy | 20 to 30 | Connect your script to the game server. Run the pre-match checklist. Fix what fails. Upload again if you changed `strategy.py`. | Send more than the one practice move. |
-| Match (round 0) | 30 to 40 | Watch. Your script is already running on your laptop and starts on its own when the phase is LIVE. | Edit any file, send moves by hand, or use your AI assistant. |
-| Round robin | 40 to about 150 | Watch. 29 rounds of 2 minutes with a 30-second gap between rounds. Your last good upload plays every round in the server's sandbox; your laptop does not play. | Use your AI assistant: it stays locked during every round and every gap. |
-| Strategy window | after rounds 10 and 20, 5 minutes each | Improve your strategy with your AI assistant and run `--submit` again. These two windows are the only chances to change what plays. | Upload outside a window: the server refuses it and your last good upload stays. |
+| Match (round 0) | first round of the 20 minutes | Watch. Your script is already running on your laptop and starts on its own when the phase is LIVE. | Edit any file, send moves by hand, or use your AI assistant. |
+| Later rounds | the rest of the 20 minutes | Watch. One round per opponent, with a 30-second gap between rounds. The rounds share the 20 minutes, so fewer opponents means longer rounds. Your last good upload plays every round in the server's sandbox; your laptop does not play. | Use your AI assistant: it stays locked during every round and every gap. Upload: the server refuses it and your last good upload stays. |
 
-The course pairs you with one opponent. You and your opponent play on your own board, and the server mirrors it to Miro. Fifteen matches run at the same time.
+The server pairs you with a new opponent each round. You and your opponent play on your own board, and the server mirrors it to Miro. All matches of a round run at the same time.
 
 ## Game rules
 
@@ -50,7 +49,7 @@ The game server is the referee. It checks every move against six rules.
 The referee decides the match in this order. It stops at the first rule that produces a winner.
 
 1. **Crystal capture.** If you own all four squares of your opponent's crystal at any moment, you win and the match ends.
-2. **Territory.** At 10 minutes, the player who owns more squares wins.
+2. **Territory.** When the match time ends, the player who owns more squares wins.
 3. **Crystal threat.** If both players own the same number of squares, the player whose crystal is under less threat wins.
 
 The threat score measures how close your opponent came to your crystal. It combines two equal parts: how many enemy squares sit near your crystal, and how close the nearest one is.

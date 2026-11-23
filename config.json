@@ -1,0 +1,7 @@
+{
+  "server_url": "PASTE-THE-SERVER-ADDRESS-HERE",
+  "practice_url": "PASTE-THE-PRACTICE-ARENA-ADDRESS-HERE",
+  "dashboard_url": "PASTE-THE-DASHBOARD-ADDRESS-HERE",
+  "interval": 1.0,
+  "refresh_every": 1
+}

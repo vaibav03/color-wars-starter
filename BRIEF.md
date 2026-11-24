@@ -114,7 +114,7 @@ Join before BUILD starts: the server makes the pairings from everyone who joined
 
 | Level | Command | What it tests | Needs |
 | --- | --- | --- | --- |
-| 1. Simulator | `python3 simulate.py` (also `--opponent random` and `--opponent house`) | Your strategy and the rules | Nothing |
+| 1. Simulator | `python3 simulate.py` (also `--opponent random`, `--opponent house`, and `--web` to watch the match in your browser at http://localhost:8000) | Your strategy and the rules | Nothing |
 | 2. Fake server | `python3 tools/fake_server.py` in one terminal, then `python3 bot.py --server http://127.0.0.1:8765 --check`, `--practice` and a full run | `bot.py` with your strategy, the phases, refused moves | Nothing; any key works |
 | 3. Practice arena | `python3 bot.py --dry-run` | Your upload, the sandbox checks, and a 1-minute game against the house bot, with a live link | Your key |
 
@@ -131,7 +131,7 @@ Join before BUILD starts: the server makes the pairings from everyone who joined
 | `python3 bot.py --dry-run` | Practice arena: prints the checks and the live link |
 | `python3 bot.py` | Waits for LIVE, then plays the match |
 
-Join is open in LOBBY only. Uploads are open in LOBBY, BUILD, TESTING and the strategy windows. The server installs `requirements.txt` once, at upload. A failed upload keeps your last good one. The arena runs Python 3.12, and the kit runs only on Python 3.12: on any other version it stops with an error.
+Join is open in LOBBY only. Uploads are open in LOBBY, BUILD, TESTING and the strategy windows. The server installs `requirements.txt` once, at upload. A failed upload keeps your last good one. The arena runs Python 3.12. Python 3.12 is mandatory on your laptop too, even if you already have another version: the kit stops on every other version, newer or older.
 
 ## Pre-match checklist
 
@@ -169,7 +169,7 @@ Each row is a failure seen in practice rounds or one the setup steps can cause. 
 | `HTTP 401` or `HTTP 403` on `--check` | The key is wrong or not loaded | Run `python3 bot.py --login` again |
 | `HTTP 403` on a move, then `Laptop play is over` | The move is not for your current match, or the round robin has started | The script stops. In the round robin this is expected: your upload plays. In round 0, run `python3 bot.py` again |
 | `HTTP 429` | Too many requests | Raise `refresh_every` in `config.json`. The starter kit retries on its own |
-| `Python 3.12 is required` | Your Python is not 3.12 | Install Python 3.12 (python.org or `brew install python@3.12`) and run the kit with `python3.12` |
+| `Python 3.12 is mandatory` | Your Python is not 3.12 (another version installed is not enough) | Install Python 3.12 (python.org or `brew install python@3.12`) and run the kit with `python3.12` |
 | `upload refused` | `strategy.py` does not import, `choose` failed, or `requirements.txt` did not install | Fix the error it prints and run `--submit` again |
 | `practice failed: ... practice_used` | You already sent your one practice move | Nothing to fix |
 | The script prints `waiting` after the phase is LIVE | A board read is in progress | Wait a few seconds. The script reads every 2 seconds |

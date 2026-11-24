@@ -50,8 +50,9 @@ SKIP_DIRS = {".git", ".sdlc", ".venv", "venv", "env", "__pycache__", "tools", "n
 def require_python():
     if sys.version_info[:2] != (3, 12):
         v = ".".join(map(str, sys.version_info[:3]))
-        sys.exit(f"Python 3.12 is required (this is Python {v}). Install it from python.org or with "
-                 f"`brew install python@3.12`, then run the kit with python3.12, e.g. python3.12 {sys.argv[0]}")
+        sys.exit(f"Python 3.12 is mandatory. This is Python {v}. Another version does not work, newer or older: "
+                 f"install Python 3.12 next to it (python.org, or `brew install python@3.12`), then run the kit "
+                 f"with python3.12, e.g. python3.12 {sys.argv[0]}")
 
 
 def now():

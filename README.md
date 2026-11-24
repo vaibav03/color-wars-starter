@@ -8,7 +8,7 @@ The work is ready when `python3 simulate.py` ends with a `RESULT` line, exit cod
 The full task brief, with the rules, the timeline and the connection steps, is `BRIEF.md` in this folder.
 
 You edit one file: `strategy.py`. You may add more `.py` files and a `requirements.txt`; `--submit` uploads them too.
-The kit needs Python 3.12 and nothing else. `bot.py` and `simulate.py` stop on any other version. Check with `python3 --version`; if it is not 3.12, install 3.12 and use `python3.12` in place of `python3`.
+**Python 3.12 is mandatory.** You must install Python 3.12 even if you already have another version (3.9, 3.11, 3.13 or any other): `bot.py` and `simulate.py` stop on every version except 3.12. Install it next to your other Python from python.org or with `brew install python@3.12`. Check with `python3 --version`; if it does not print 3.12, use `python3.12` in place of `python3` in every command.
 
 ## Files
 
@@ -34,9 +34,12 @@ python3 simulate.py
 python3 simulate.py --side blue --opponent random --map
 python3 simulate.py --opponent house
 python3 simulate.py --watch
+python3 simulate.py --web
 ```
 
 `--watch` draws the board again every 10 turns while the match plays (`--watch 5` for every 5 turns). `M` is you, `x` is the opponent.
+
+`--web` plays the match, then opens a replay in your browser at http://localhost:8000: the board in the game's colors, with play, pause, speed and a turn slider. Point at a square to see its name. Ctrl-C in the terminal stops it. `--web 9000` uses another port.
 
 The sample strategy draws against itself. Your first goal is to beat it. The `house` opponent is the practice arena's house bot.
 

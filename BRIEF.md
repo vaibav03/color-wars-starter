@@ -14,7 +14,7 @@ The instructor starts the session when everyone has joined. Build and testing co
 
 | Phase | When | What you do | What you must not do |
 | --- | --- | --- | --- |
-| Build | the instructor sets the length in class; the dashboard shows the time left | Write your strategy with your AI assistant. Test it in the offline simulator. Upload it with `python3 bot.py --submit`. | Send moves to the game server. |
+| Build | the instructor sets the length in class; the dashboard shows the time left | Start the change with `/sdlc:intent` and your idea, then approve the plan and let your AI assistant build and check it. Test it in the offline simulator. Upload it with `python3 bot.py --submit`. | Send moves to the game server. |
 | Test and deploy | after Build | Connect your script to the game server. Run the pre-match checklist. Fix what fails. Upload again if you changed `strategy.py`. | Send more than the one practice move. |
 | Match (round 0) | first round of the 20 minutes | Watch. Your script is already running on your laptop and starts on its own when the phase is LIVE. | Edit any file, send moves by hand, or use your AI assistant. |
 | Later rounds | the rest of the 20 minutes | Watch. One round per opponent, with a 30-second gap between rounds. The rounds share the 20 minutes, so fewer opponents means longer rounds. Your last good upload plays every round in the server's sandbox; your laptop does not play. | Use your AI assistant: it stays locked during every round and every gap. Upload: the server refuses it and your last good upload stays. |
@@ -81,7 +81,7 @@ You write one function, `choose`. The starter kit calls it once per second and s
 | File | Who edits it | What it does |
 | --- | --- | --- |
 | `strategy.py` | You | Holds `choose`, your strategy |
-| `config.json` | No one | Sets the game server's address, the practice arena's address, and how often to re-read the board. Your color and crystals come from the server |
+| `config.json` | No one | Sets the game server's address, the practice arena's address, and how often to re-read the board. The timing is the same for every player and fixed. Your color and crystals come from the server |
 | `bot.py` | No one | Connects to the game server, reads the board, calls `choose`, sends one move, waits one second, repeats |
 | `simulate.py` | No one | Runs your strategy against a sample opponent on your laptop, with no network. The sample strategy draws against itself, so your first goal is to beat it |
 | `colorwars.py` | No one | Holds the game rules and two helpers your strategy may import: `neighbors` and `distance_map` |
@@ -99,23 +99,35 @@ You write one function, `choose`. The starter kit calls it once per second and s
 
 If `choose` returns a square that is not in `legal`, or raises an error, the starter kit logs a warning and captures the first square in `legal` instead, so your script keeps running. The arena's sandbox does the same in the round robin (and also when `choose` takes longer than 0.5 s).
 
-Three decisions are yours and affect the result.
+Two decisions are yours and affect the result.
 
 - **Which square to take.** The sample strategy takes the legal square closest to the enemy crystal. It ignores defense.
-- **How often to re-read the board.** Between reads your script acts on old information: it sees your own captures at once, but not your opponent's. `refresh_every` in `config.json` sets the number of captures between reads.
 - **What to do after a refusal.** The server refuses moves that break a rule. The starter kit tells `choose` which squares were refused since the last read.
 
 ## Join the game
 
 You join as your Claude Code account (any account works). Nothing else to create. Allow 1 minute.
 
-1. Open a terminal in the starter kit folder.
-2. Check that Claude Code is logged in (run `claude`, then `/status`; if not, `/login`).
+1. Open a terminal in the starter kit folder and start Claude Code there: `cd color-wars-starter`, then `claude`. In the desktop app, choose the `color-wars-starter` folder for the session. Claude Code must run inside this folder, not in a folder above it.
+2. Check that Claude Code is logged in (type `/status`; if not, `/login`).
 3. Run `python3 bot.py --login`. It prints `joined as`, your name on the dashboard, and the link to watch your match.
 4. Run `python3 bot.py --check`. It prints `connected`; your color and crystal appear once BUILD has made the pairings.
 5. Run `python3 bot.py --watch` and leave it running in its own terminal. It reads the phase every 5 seconds and writes `.sdlc/arena-phase.json`.
 
 Join before BUILD starts: the server makes the pairings from everyone who joined. `--login` reads your account's id, email and name from Claude Code's settings on this computer and sends them to the game server, which gives you a player key; `bot.py` saves the key in `.env`. The same account always gets the same key, so `--login` again is safe. Do not share the key. Git ignores `.env`, and the script never prints the key. In Claude Code, `/join` does these steps with you.
+
+## Workflow
+
+Every change to your strategy goes through the same steps in Claude Code. `/sdlc:intent` starts them.
+
+1. Type `/sdlc:intent` and your idea, in your own words. For example: `/sdlc:intent defend my crystal when the enemy is within 5 squares, otherwise push to their crystal`.
+2. Read the intent your assistant writes from your words, and approve it or ask for changes.
+3. Read the plan, and approve it or ask for changes. Your assistant edits no code before you approve the plan.
+4. Your assistant builds the change, one small tested task at a time, then runs the checks again and shows you the results to accept.
+5. When you are asked whether to deliver the change, choose "Deliver now" if you are happy with it. This closes the change; nothing is sent anywhere.
+6. Upload with `python3 bot.py --submit`.
+
+For the next idea, type `/sdlc:intent` again. The files of each change are in `changes/`.
 
 ## Test in three levels
 
@@ -134,7 +146,7 @@ Join before BUILD starts: the server makes the pairings from everyone who joined
 | `python3 bot.py --practice` | In TESTING only: sends one practice move and prints `practice passed` |
 | `python3 bot.py --phase` | Prints the phase once |
 | `python3 bot.py --watch` | Keeps `.sdlc/arena-phase.json` fresh until Ctrl-C |
-| `python3 bot.py --submit` | Uploads all your `.py` files except `bot.py`, `simulate.py` and `colorwars.py`, plus `requirements.txt` |
+| `python3 bot.py --submit` | Uploads all your `.py` files except `bot.py`, `simulate.py`, `colorwars.py` and the tests in `tests/`, plus `requirements.txt` |
 | `python3 bot.py --dry-run` | Practice arena: prints the checks and the live link |
 | `python3 bot.py` | Waits for LIVE, then plays the match |
 
@@ -175,12 +187,12 @@ Each row is a failure seen in practice rounds or one the setup steps can cause. 
 | `join failed: joining is closed` | BUILD has started | Ask the instructor |
 | `HTTP 401` or `HTTP 403` on `--check` | The key is wrong or not loaded | Run `python3 bot.py --login` again |
 | `HTTP 403` on a move, then `Laptop play is over` | The move is not for your current match, or the round robin has started | The script stops. In the round robin this is expected: your upload plays. In round 0, run `python3 bot.py` again |
-| `HTTP 429` | Too many requests | Raise `refresh_every` in `config.json`. The starter kit retries on its own |
+| `HTTP 429` | Too many requests | The starter kit slows down and retries on its own. Close every other copy of `bot.py` |
 | `Python 3.12 is mandatory` | Your Python is not 3.12 (another version installed is not enough) | Install Python 3.12 (python.org or `brew install python@3.12`) and run the kit with `python3.12` |
 | `upload refused` | `strategy.py` does not import, `choose` failed, or `requirements.txt` did not install | Fix the error it prints and run `--submit` again |
 | `practice failed: ... practice_used` | You already sent your one practice move | Nothing to fix |
 | The script prints `waiting` after the phase is LIVE | A board read is in progress | Wait a few seconds. The script reads every 2 seconds |
-| `KIT-WARN reverted` with `illegal` | Your opponent took the square next to it since the last read | Take squares from `legal` only, or lower `refresh_every` |
+| `KIT-WARN reverted` with `illegal` | Your opponent took the square next to it since the last read | Take squares from `legal` only, and use `reverted` in `choose` |
 | `KIT-WARN reverted` with `cooldown` | A second program is sending moves with your key | Close every other copy of `bot.py` |
 | Your squares turn empty in a block | Your opponent cut your supply line | Your strategy needs a wider line or a defense rule. This is a strategy problem, not a bug |
 | KIT-ERROR match already live, not starting | A kit file changed after LIVE, or the script never ran before LIVE | Run the script after your last edit and before LIVE. During a match there is no fix |

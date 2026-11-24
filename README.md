@@ -7,6 +7,8 @@ You win by capturing the opponent's crystal, or by owning more squares when the 
 The work is ready when `python3 simulate.py` ends with a `RESULT` line, exit code 0, and no `KIT-ERROR` or `KIT-WARN` line. The next goal is `RESULT win`.
 The full task brief, with the rules, the timeline and the connection steps, is `BRIEF.md` in this folder.
 
+Work in Claude Code, opened inside this folder (`cd color-wars-starter && claude`), and start every change with `/sdlc:intent`; see Workflow below.
+
 You edit one file: `strategy.py`. You may add more `.py` files and a `requirements.txt`; `--submit` uploads them too.
 **Python 3.12 is mandatory.** You must install Python 3.12 even if you already have another version (3.9, 3.11, 3.13 or any other): `bot.py` and `simulate.py` stop on every version except 3.12. Install it next to your other Python from python.org or with `brew install python@3.12`. Check with `python3 --version`; if it does not print 3.12, use `python3.12` in place of `python3` in every command.
 
@@ -15,15 +17,42 @@ You edit one file: `strategy.py`. You may add more `.py` files and a `requiremen
 | File | Edit it? | Purpose |
 | --- | --- | --- |
 | `strategy.py` | Yes | Holds `choose`, the function that picks your next square |
-| `config.json` | No | The game server's address (`server_url`) and the practice arena's (`practice_url`) |
+| `config.json` | No | The game server's address (`server_url`), the practice arena's (`practice_url`), and the bot's timing, which is the same for every player |
 | `bot.py` | No | Connects to the game server and plays your strategy, one move per second |
 | `simulate.py` | No | Plays your strategy against a sample opponent, offline |
 | `colorwars.py` | No | Game rules and the helpers your strategy may import |
 | `tools/fake_server.py` | No | A local game server for testing `bot.py` without the network |
 | `.env` | No | `python3 bot.py --login` writes your player key here |
 | `.sdlc/` | No | Written by the bot: match phase, recorded hashes, run log |
+| `tests/` | Yes | Tests of your strategy; `python3 -m unittest discover -s tests` runs them. Not uploaded |
+| `CLAUDE.md` | No | How your AI assistant works in this folder, and the checks it runs |
+| `specs/` | No | The project's mission, tech stack and roadmap |
+| `harness-spec.md` | No | The checks around your strategy, and the pre-match checklist |
+| `changes/` | No | One folder per change, written by the workflow: intent, plan, verification |
 
 Your color, your crystal and your opponent's crystal come from the server. You do not set them.
+
+## Workflow
+
+Open Claude Code inside this folder:
+
+```
+cd color-wars-starter
+claude
+```
+
+Then every change to your strategy takes the same steps.
+
+| Step | What you do | What your AI assistant does |
+| --- | --- | --- |
+| Intent | Type `/sdlc:intent` and your idea, then approve the intent | Writes down what the change is for, from your words and the brief |
+| Plan | Approve the plan, or ask for changes | Cuts the change into small tasks, each with a test |
+| Build | Watch | Writes each test, then the code that makes it pass |
+| Verify | Read the results and accept them | Runs the tests and the simulator again and records what they show |
+| Deliver | Choose "Deliver now" when you are asked | Closes the change; nothing is sent anywhere |
+| Upload | `python3 bot.py --submit` | |
+
+Your assistant edits no code before you approve the plan. For the next idea, type `/sdlc:intent` again.
 
 ## Test in three levels
 
@@ -84,7 +113,7 @@ It prints each check and a live link to the game.
 | `bot.py --practice` | In TESTING: one practice move; prints `practice passed` |
 | `bot.py --phase` | Prints the phase and the banner once |
 | `bot.py --watch` | Reads the phase every 5 seconds and keeps `.sdlc/arena-phase.json` fresh, until Ctrl-C |
-| `bot.py --submit` | Uploads every `.py` file except `bot.py`, `simulate.py` and `colorwars.py`, plus `requirements.txt` |
+| `bot.py --submit` | Uploads every `.py` file except `bot.py`, `simulate.py`, `colorwars.py` and the tests in `tests/`, plus `requirements.txt` |
 | `bot.py --dry-run` | Practice arena: uploads, prints the checks and the live link of a 1-minute game |
 | `bot.py` | Waits for LIVE, then plays until the match ends |
 | `--server URL` | Added to any command: use that server instead of `config.json` |

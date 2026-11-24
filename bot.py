@@ -44,7 +44,8 @@ SERVER_PHASES = {"lobby": "lobby", "build": "build", "testing": "testing", "paus
                  "live": "competition", "rr": "competition", "over": "ended", "ended": "ended",
                  "window": "build"}                    # WINDOW: strategy updates, AI tools open again
 KIT_FILES = ("bot.py", "simulate.py", "colorwars.py")    # never uploaded: the server has its own
-SKIP_DIRS = {".git", ".sdlc", ".venv", "venv", "env", "__pycache__", "tools", "node_modules"}
+SKIP_DIRS = {".git", ".sdlc", ".venv", "venv", "env", "__pycache__", "tools", "tests", "node_modules"}
+NEXT_STEP = "Next: start the workflow with /sdlc:intent"   # printed after a successful --login or --check
 
 
 def require_python():
@@ -237,8 +238,9 @@ def join_with_miro(config_path, server=None):
         except RuntimeError as e:
             print(f"warning: the practice arena did not register you ({e}); --dry-run may fail", file=sys.stderr)
     print(f"joined as {res.get('name') or res['alias']} | your name on the dashboard: {res['alias']}")
-    print("player key saved in .env. Next: python3 bot.py --check")
+    print("player key saved in .env. Check the connection with: python3 bot.py --check")
     print("watch your match:", my_page(cfg, res["alias"]))
+    print(NEXT_STEP)
 
 
 def save_key(key):
@@ -427,7 +429,8 @@ def main():
         if not key.startswith("cwk_"):
             print("warning: a player key starts with cwk_; check that you copied all of it", file=sys.stderr)
         save_key(key)
-        print("key saved in .env. Next: python3 bot.py --check")
+        print("key saved in .env. Check the connection with: python3 bot.py --check")
+        print(NEXT_STEP)
         return
 
     cfg = load_config(a.config, a.server)
@@ -565,6 +568,7 @@ def main():
             print("no match yet: your color and crystal arrive with your match")
             if a.practice:
                 sys.exit(f"practice failed: no match board yet (phase {phase_file.phase}). Practice works in TESTING.")
+            print(NEXT_STEP)
             return
         if state.get("alias"):
             print("your name on the dashboard:", state["alias"])
@@ -575,6 +579,7 @@ def main():
         legal = legal_squares(board, base)
         print("legal squares right now:", len(legal))
         if not a.practice:
+            print(NEXT_STEP)
             return
         if not legal:
             sys.exit("practice failed: no legal square.")

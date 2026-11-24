@@ -32,6 +32,7 @@ _state = {"moves": 0, "phase": "expand", "lane": None}
 EXPAND_SQUARES = 60            # switch to the raid once we own this many squares...
 EXPAND_MOVES = 90              # ...or after this many moves, whichever comes first
 HOME_RADIUS = 7                # the expand half stays within this many steps of our crystal
+DANGER_STEPS = 3              # an enemy square this close to our crystal means danger
 
 
 def _phase(board):
@@ -99,6 +100,26 @@ def choose(board, legal, my_crystal, enemy_crystal, reverted):
     crystal_left = sum(board.get(c) != "me" for c in enemy_crystal)
     skip = set(reverted)
     phase = _phase(board)
+
+    if crystal_left == 1:                             # 1. the last enemy crystal square wins
+        for s in legal:
+            if s in enemy_crystal:
+                _recent.append(s)
+                return s
+    near = {s for s in enemy_now if to_home.get(s, 99) <= DANGER_STEPS}
+    if near:                                          # 2. our crystal is in danger: defend first
+        def relief(s):                                # (danger squares removed, all removed)
+            after = dict(board)
+            for q in _area(s, board):
+                after[q] = "me"
+            left = _connected(after, enemy_crystal, "enemy")
+            return (len(near - left), enemy_count - len(left))
+        options = [s for s in legal if board[s] == "enemy"]
+        best = max(options, key=lambda s: (relief(s), -to_home.get(s, 99), s not in skip), default=None)
+        if best is not None and relief(best)[0] > 0:
+            _recent.append(best)
+            return best                               # the deepest cut that clears the danger
+
     flank = _flank_map(board, enemy_crystal) if phase == "flank" else {}
 
     def expand_score(s):
@@ -108,6 +129,8 @@ def choose(board, legal, my_crystal, enemy_crystal, reverted):
         own = sum(board.get(n) == "me" for n in neighbors(s))
         value += 0.5 * own                            # thick blob, no thin fingers
         value -= 0.4 * d                              # fill near home first
+        if board[s] == "empty" and any(board.get(n) == "enemy" for n in neighbors(s)):
+            value += 1.0                              # hug an enemy finger, so we can cut it deep
         if d > HOME_RADIUS:
             value -= 20                               # stay home in the first half
         if s in skip:

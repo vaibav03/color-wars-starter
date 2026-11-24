@@ -11,8 +11,13 @@ Walk the student through joining. Do each step in order.
      step 1 again.
    - `joining is closed`: BUILD has started. Tell the student to ask the instructor. Stop.
 2. Run `python3 bot.py --check` and confirm it prints `connected`.
-3. Tell the student the next step: write `strategy.py`, test it, upload with `python3 bot.py --submit` before
-   BUILD ends. They start `python3 bot.py` themselves before round 0, not you.
+3. Next, start the workflow with `sdlc:intent`. Tell the student: "You are in. Next, start the workflow: type
+   `/sdlc:intent` and your idea for the strategy, for example `/sdlc:intent defend my crystal and take bombs`."
+   - If the student already said in this conversation what the strategy should do, start the skill `sdlc:intent`
+     yourself, with their words as its arguments.
+   - Otherwise stop there and wait. Do not start it with no idea from the student, and do not invent one.
+   Do not edit `strategy.py` in this skill. The upload (`python3 bot.py --submit`, before BUILD ends) comes after
+   the workflow's checks. The student starts `python3 bot.py` themselves before round 0, not you.
 
 Most students are not technical, so show results in the browser, not only in the terminal:
 - To test a strategy, run `python3 simulate.py --web`. It opens the match replay in the browser. Tell the student

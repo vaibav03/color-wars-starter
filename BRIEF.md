@@ -1,6 +1,6 @@
 # Color Wars Script Challenge: Task Brief
 
-Updated 2026-11-23
+Updated 2026-11-24
 
 ## Purpose
 
@@ -10,15 +10,17 @@ You work with an AI coding assistant for the whole session. Your result depends 
 
 ## Timeline
 
-The instructor starts the session when everyone has joined. Build comes first. Then all your matches play at the same time, on the server: your uploaded strategy plays every opponent at once. There are no rounds, and your laptop does not play. The dashboard shows each phase and how long it has left.
+The instructor starts the session when everyone has joined. Build comes first. Then the server plays a full round robin: your uploaded strategy plays every other player once, and all the matches play at the same time. There are no rounds, and your laptop does not play. The dashboard shows each phase and how long it has left.
 
 | Phase | When | What you do | What you must not do |
 | --- | --- | --- | --- |
 | Build | the instructor sets the length in class; the dashboard shows the time left | Start the change with `/sdlc:intent` and your idea, then approve the plan and let your AI assistant build and check it. Test it in the offline simulator. Upload it with `python3 bot.py --submit`. | Send moves to the game server. |
 | Get ready | 30 seconds | Watch. The server starts your uploaded strategy once for each match. | Upload: the server refuses it and your last good upload stays. |
-| Matches | the rest of the game | Watch. Your last good upload plays all your opponents at the same time, each on its own board, in the server's sandbox. Your laptop does not play. | Use your AI assistant: it stays locked until the game is over. Upload: the server refuses it. |
+| Matches | the rest of the game | Watch. Your last good upload plays every other player once, all at the same time, each match on its own board, in the server's sandbox. Your laptop does not play. | Use your AI assistant: it stays locked until the game is over. Upload: the server refuses it. |
 
 Build ends early when everyone has uploaded. Each match has its own board, and the dashboard shows all of them live.
+
+Each match gives points: 3 for a win, 1 for a draw, 0 for a loss. When all the matches are over, the dashboard shows the leaderboard. It also has a replay page with the games the top 4 played against each other.
 
 ## Game rules
 
@@ -133,7 +135,7 @@ For the next idea, type `/sdlc:intent` again. The files of each change are in `c
 | Level | Command | What it tests | Needs |
 | --- | --- | --- | --- |
 | 1. Simulator | `python3 simulate.py` (also `--opponent random`, `--opponent house`, and `--web` to watch the match in your browser at http://localhost:8000) | Your strategy and the rules | Nothing |
-| 2. Fake server | `python3 tools/fake_server.py` in one terminal, then `python3 bot.py --server http://127.0.0.1:8765 --check`, `--practice` and a full run | `bot.py` with your strategy, the phases, refused moves | Nothing; any key works |
+| 2. Fake server | `python3 tools/fake_server.py` in one terminal, then `python3 bot.py --server http://127.0.0.1:8765 --check` and a full run | `bot.py` with your strategy, the phases, refused moves | Nothing; any key works |
 | 3. Practice arena | `python3 bot.py --dry-run` | Your upload, the sandbox checks, and a 1-minute game against the house bot, with a live link | Your key |
 
 ## Commands
@@ -142,42 +144,37 @@ For the next idea, type `/sdlc:intent` again. The files of each change are in `c
 | --- | --- |
 | `python3 bot.py --login` | Joins as your Claude Code account and saves your player key in `.env` |
 | `python3 bot.py --check` | Prints `connected`, your color and your crystal |
-| `python3 bot.py --practice` | In TESTING only: sends one practice move and prints `practice passed` |
 | `python3 bot.py --phase` | Prints the phase once |
 | `python3 bot.py --watch` | Keeps `.sdlc/arena-phase.json` fresh until Ctrl-C |
 | `python3 bot.py --submit` | Uploads all your `.py` files except `bot.py`, `simulate.py`, `colorwars.py` and the tests in `tests/`, plus `requirements.txt` |
 | `python3 bot.py --dry-run` | Practice arena: prints the checks and the live link |
-| `python3 bot.py` | Waits for LIVE, then plays the match |
+| `python3 bot.py` | Plays a match against the fake server (level 2). In the game, your upload plays, not your laptop |
 
-Join is open in LOBBY only. Uploads are open in LOBBY, BUILD, TESTING and the strategy windows. The server installs `requirements.txt` once, at upload. A failed upload keeps your last good one. The arena runs Python 3.12. Python 3.12 is mandatory on your laptop too, even if you already have another version: the kit stops on every other version, newer or older.
+Join is open in LOBBY only. Uploads are open in LOBBY and BUILD. The server installs `requirements.txt` once, at upload. A failed upload keeps your last good one. The arena runs Python 3.12. Python 3.12 is mandatory on your laptop too, even if you already have another version: the kit stops on every other version, newer or older.
 
 ## Pre-match checklist
 
-Complete all six checks before minute 30. A script that fails a check is not ready to play.
+Complete all four checks before BUILD ends. A script that fails a check is not ready to play.
 
 - [ ] `python3 simulate.py` ends with a `RESULT` line and prints no line that starts with `KIT-ERROR` or `KIT-WARN`.
 - [ ] `python3 bot.py --check` prints `connected`, your color, and your crystal squares.
 - [ ] `python3 bot.py --submit` prints `upload passed`.
-- [ ] `python3 bot.py --practice`, in TESTING, sends one move next to your crystal and prints `practice passed`.
 - [ ] `python3 bot.py --watch` runs in its own terminal.
-- [ ] `python3 bot.py`, started in your own terminal after your last edit, prints `waiting` until the phase is LIVE.
 
-Leave the last command running. The script starts on its own when the phase changes to LIVE. Start it yourself; do not ask your AI assistant to start it. Each run before LIVE records your four kit files. After LIVE, the script starts only with those same files. A script that stopped can be started again, and a script that was edited cannot.
+Your last good upload is what plays. Upload again after every change you want in the game.
 
 ## Rules of conduct
 
-The match tests your script, so you do not help it once the match starts.
+The matches test your uploaded strategy, so you do not help it once BUILD ends.
 
-- Do not edit any file between LIVE and the end of the match.
-- If your script stops, you may start it again with `python3 bot.py`. Type nothing else. The script runs only if no kit file has changed since before LIVE.
-- Do not send moves by hand or through an AI assistant.
-- Do not use another student's key or run a second script.
+- Do not send moves by hand, through an AI assistant, or with `python3 bot.py`.
+- Do not use another student's key.
 
 The server logs every move request with the key that sent it. A player who breaks a rule forfeits the match. Your AI assistant may stop answering in the starter kit folder while the banner reads PAUSED or LIVE. This is expected.
 
 ## Troubleshooting
 
-Each row is a failure seen in practice rounds or one the setup steps can cause. Fix these during the test phase. You cannot fix them during the match.
+Each row is a failure seen in practice games or one the setup steps can cause. Fix these during BUILD. You cannot fix them during the matches.
 
 | What you see | Cause | Fix |
 | --- | --- | --- |
@@ -185,13 +182,10 @@ Each row is a failure seen in practice rounds or one the setup steps can cause. 
 | `Log in to Claude Code first` | Claude Code is not logged in on this computer | Run `claude`, type `/login`, sign in |
 | `join failed: joining is closed` | BUILD has started | Ask the instructor |
 | `HTTP 401` or `HTTP 403` on `--check` | The key is wrong or not loaded | Run `python3 bot.py --login` again |
-| `HTTP 403` on a move, then `Laptop play is over` | The move is not for your current match, or the round robin has started | The script stops. In the round robin this is expected: your upload plays. In round 0, run `python3 bot.py` again |
+| `HTTP 403` on a move, then `Laptop play is over` | Your laptop sent a move to the game server | The script stops. This is expected: your upload plays, not your laptop |
 | `HTTP 429` | Too many requests | The starter kit slows down and retries on its own. Close every other copy of `bot.py` |
 | `Python 3.12 is mandatory` | Your Python is not 3.12 (another version installed is not enough) | Install Python 3.12 (python.org or `brew install python@3.12`) and run the kit with `python3.12` |
 | `upload refused` | `strategy.py` does not import, `choose` failed, or `requirements.txt` did not install | Fix the error it prints and run `--submit` again |
-| `practice failed: ... practice_used` | You already sent your one practice move | Nothing to fix |
-| The script prints `waiting` after the phase is LIVE | A board read is in progress | Wait a few seconds. The script reads every 2 seconds |
 | `KIT-WARN reverted` with `illegal` | Your opponent took the square next to it since the last read | Take squares from `legal` only, and use `reverted` in `choose` |
 | `KIT-WARN reverted` with `cooldown` | A second program is sending moves with your key | Close every other copy of `bot.py` |
 | Your squares turn empty in a block | Your opponent cut your supply line | Your strategy needs a wider line or a defense rule. This is a strategy problem, not a bug |
-| KIT-ERROR match already live, not starting | A kit file changed after LIVE, or the script never ran before LIVE | Run the script after your last edit and before LIVE. During a match there is no fix |

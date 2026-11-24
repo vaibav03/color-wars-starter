@@ -76,14 +76,12 @@ The sample strategy draws against itself. Your first goal is to beat it. The `ho
 
 ```
 python3 tools/fake_server.py                         lobby 5 s, build 5 s, testing 30 s, paused 5 s, live 120 s
-python3 tools/fake_server.py --start testing --hold  stay in TESTING
 ```
 
 Then run the bot against it in a second terminal. Add `--server http://127.0.0.1:8765` to every command:
 
 ```
 python3 bot.py --server http://127.0.0.1:8765 --check
-python3 bot.py --server http://127.0.0.1:8765 --practice
 python3 bot.py --server http://127.0.0.1:8765
 ```
 
@@ -100,7 +98,7 @@ It prints each check and a live link to the game.
 1. Log in to Claude Code (any account).
 2. Run `python3 bot.py --login`. It joins the game as your Claude Code account and writes your player key into `.env`. Git ignores `.env`, and the bot never prints the key.
 3. Run `python3 bot.py --check`. It prints `connected`; your color and crystal squares appear once BUILD has made the pairings.
-4. Upload with `python3 bot.py --submit` before BUILD ends. When BUILD ends, the server plays your upload against all your opponents at the same time. Your laptop does not play.
+4. Upload with `python3 bot.py --submit` before BUILD ends. When BUILD ends, the server plays a full round robin: your upload plays every other player once, all matches at the same time. Your laptop does not play. A win gives 3 points, a draw 1, a loss 0. After the round robin, the dashboard shows the leaderboard and a replay page with the games the top 4 played against each other.
 5. Run `python3 bot.py --phase` at any time to print the match phase.
 6. Start `python3 bot.py --watch` when you arrive and leave it running. It keeps `.sdlc/arena-phase.json` up to date.
 
@@ -110,15 +108,14 @@ It prints each check and a live link to the game.
 | --- | --- |
 | `bot.py --login` | Joins as your Claude Code account and saves your player key in `.env` |
 | `bot.py --check` | Prints `connected`; from BUILD on also your color, your crystal and the link to watch your match |
-| `bot.py --practice` | In TESTING: one practice move; prints `practice passed` |
 | `bot.py --phase` | Prints the phase and the banner once |
 | `bot.py --watch` | Reads the phase every 5 seconds and keeps `.sdlc/arena-phase.json` fresh, until Ctrl-C |
 | `bot.py --submit` | Uploads every `.py` file except `bot.py`, `simulate.py`, `colorwars.py` and the tests in `tests/`, plus `requirements.txt` |
 | `bot.py --dry-run` | Practice arena: uploads, prints the checks and the live link of a 1-minute game |
-| `bot.py` | Waits for LIVE, then plays until the match ends |
+| `bot.py` | Plays a match against the fake server (level 2); in the game your upload plays, not your laptop |
 | `--server URL` | Added to any command: use that server instead of `config.json` |
 
-Uploads are open in LOBBY, BUILD, TESTING and the strategy windows. A failed upload keeps your last good one.
+Uploads are open in LOBBY and BUILD. A failed upload keeps your last good one.
 
 ## Play
 
@@ -126,9 +123,9 @@ Uploads are open in LOBBY, BUILD, TESTING and the strategy windows. A failed upl
 python3 bot.py
 ```
 
-Start the bot yourself, in your own terminal, before the phase is LIVE. Do not ask your AI assistant to start it.
+In the game, the server plays your upload in every match; your laptop does not play. Use `python3 bot.py` against the fake server (level 2).
+Start the bot yourself, in your own terminal. Do not ask your AI assistant to start it.
 The bot prints `waiting` until the phase is LIVE, then plays until the match ends.
-Do not touch the keyboard during the match.
 
 Each time the bot reads the phase before the match, it records the hashes of `strategy.py`, `config.json`, `bot.py` and `colorwars.py`.
 After LIVE, the bot starts only if those four files are unchanged. A bot that crashed can be started again; a bot that was edited cannot.
@@ -149,7 +146,7 @@ Every move carries the same four hashes to the server.
 | `RESULT win\|loss\|draw <yours>-<theirs> <reason>` | Last line of `simulate.py` |
 
 `simulate.py` exits with 0 after any finished match and with 1 when `choose` raised an error or returned an illegal square.
-`bot.py --check`, `--practice`, `--phase`, `--submit` and `--dry-run` exit with 1 on any failure.
+`bot.py --check`, `--phase`, `--submit` and `--dry-run` exit with 1 on any failure.
 
 ## What the kit does for you
 

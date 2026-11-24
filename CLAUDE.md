@@ -24,8 +24,8 @@ If the student has not said what they want the strategy to do, ask them for thei
 
 ## What the student does, not you
 
-- The student starts `python3 bot.py` (the match run) in their own terminal. Never start it for them.
-- You may run `python3 simulate.py`, the tests, `python3 bot.py --check`, `--phase`, `--submit` and `--dry-run`. Run `python3 bot.py --practice` only when the student asks: the server allows one practice move.
+- Never start `python3 bot.py` (the match run). In the game, the server plays the student's upload against every other player, all matches at the same time; the laptop does not play.
+- You may run `python3 simulate.py`, the tests, `python3 bot.py --check`, `--phase`, `--submit` and `--dry-run`.
 - While the match banner reads PAUSED or LIVE, the session in this folder may stop answering. This is expected.
 
 ## Layout

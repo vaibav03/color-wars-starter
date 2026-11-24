@@ -100,7 +100,7 @@ It prints each check and a live link to the game.
 1. Log in to Claude Code (any account).
 2. Run `python3 bot.py --login`. It joins the game as your Claude Code account and writes your player key into `.env`. Git ignores `.env`, and the bot never prints the key.
 3. Run `python3 bot.py --check`. It prints `connected`; your color and crystal squares appear once BUILD has made the pairings.
-4. In TESTING, run `python3 bot.py --practice`. It sends one legal move next to your crystal and confirms the server accepts it.
+4. Upload with `python3 bot.py --submit` before BUILD ends. When BUILD ends, the server plays your upload against all your opponents at the same time. Your laptop does not play.
 5. Run `python3 bot.py --phase` at any time to print the match phase.
 6. Start `python3 bot.py --watch` when you arrive and leave it running. It keeps `.sdlc/arena-phase.json` up to date.
 

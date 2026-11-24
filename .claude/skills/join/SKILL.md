@@ -17,7 +17,7 @@ Walk the student through joining. Do each step in order.
      yourself, with their words as its arguments.
    - Otherwise stop there and wait. Do not start it with no idea from the student, and do not invent one.
    Do not edit `strategy.py` in this skill. The upload (`python3 bot.py --submit`, before BUILD ends) comes after
-   the workflow's checks. The student starts `python3 bot.py` themselves before round 0, not you.
+   the workflow's checks. The server plays the upload in all matches at once; nothing runs on the laptop.
 
 Most students are not technical, so show results in the browser, not only in the terminal:
 - Every time you simulate a match, add `--web` (for example `python3 simulate.py --web`) and run it in the

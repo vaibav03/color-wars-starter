@@ -12,10 +12,10 @@ You work with an AI coding assistant for the whole session. Your result depends 
 
 The instructor starts the session when everyone has joined. Build and testing come first; then all matches together take 20 minutes. Round 0 runs on your laptop; in the later rounds your uploaded strategy plays a new opponent each round. The dashboard shows each phase and how long it has left.
 
-| Phase | Minutes | What you do | What you must not do |
+| Phase | When | What you do | What you must not do |
 | --- | --- | --- | --- |
-| Build | 0 to 20 | Write your strategy with your AI assistant. Test it in the offline simulator. Upload it with `python3 bot.py --submit`. | Send moves to the game server. |
-| Test and deploy | 20 to 30 | Connect your script to the game server. Run the pre-match checklist. Fix what fails. Upload again if you changed `strategy.py`. | Send more than the one practice move. |
+| Build | the instructor sets the length in class; the dashboard shows the time left | Write your strategy with your AI assistant. Test it in the offline simulator. Upload it with `python3 bot.py --submit`. | Send moves to the game server. |
+| Test and deploy | after Build | Connect your script to the game server. Run the pre-match checklist. Fix what fails. Upload again if you changed `strategy.py`. | Send more than the one practice move. |
 | Match (round 0) | first round of the 20 minutes | Watch. Your script is already running on your laptop and starts on its own when the phase is LIVE. | Edit any file, send moves by hand, or use your AI assistant. |
 | Later rounds | the rest of the 20 minutes | Watch. One round per opponent, with a 30-second gap between rounds. The rounds share the 20 minutes, so fewer opponents means longer rounds. Your last good upload plays every round in the server's sandbox; your laptop does not play. | Use your AI assistant: it stays locked during every round and every gap. Upload: the server refuses it and your last good upload stays. |
 

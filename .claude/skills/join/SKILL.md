@@ -11,7 +11,13 @@ Walk the student through joining. Do each step in order.
      step 1 again.
    - `joining is closed`: BUILD has started. Tell the student to ask the instructor. Stop.
 2. Run `python3 bot.py --check` and confirm it prints `connected`.
-3. Tell the student the next step: write `strategy.py`, test with `python3 simulate.py --watch`, upload with
-   `python3 bot.py --submit` before BUILD ends. They start `python3 bot.py` themselves before round 0, not you.
+3. Tell the student the next step: write `strategy.py`, test it, upload with `python3 bot.py --submit` before
+   BUILD ends. They start `python3 bot.py` themselves before round 0, not you.
+
+Most students are not technical, so show results in the browser, not only in the terminal:
+- To test a strategy, run `python3 simulate.py --web`. It opens the match replay in the browser. Tell the student
+  the result in one plain sentence (won or lost, and the score).
+- `python3 bot.py --submit` opens the student's dashboard page after `upload passed`. Tell the student in plain
+  words that their strategy is uploaded; the page shows a green line that says so.
 
 Never print the player key from `.env`. Do not tell the student anything about groups.

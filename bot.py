@@ -524,6 +524,17 @@ def main():
             sys.exit(f"upload refused: {res.get('error') or res.get('status')}. The last good upload stays.")
         if not a.dry_run:
             print("upload passed")
+            print(f"\n  ✓ YOUR STRATEGY IS UPLOADED (version {res.get('version')}). The server will play it for you.\n")
+            try:                                       # the dashboard page shows the upload too
+                alias = server.state().get("alias")
+            except RuntimeError:
+                alias = None
+            if alias:
+                page = my_page(cfg, alias)
+                print("your dashboard page:", page)
+                if page.startswith("http"):
+                    import webbrowser
+                    webbrowser.open(page)
             return
         try:
             res = server.dryrun({})                    # the server uses the upload that just passed

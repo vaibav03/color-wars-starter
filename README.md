@@ -8,7 +8,7 @@ The work is ready when `python3 simulate.py` ends with a `RESULT` line, exit cod
 The full task brief, with the rules, the timeline and the connection steps, is `BRIEF.md` in this folder.
 
 You edit one file: `strategy.py`. You may add more `.py` files and a `requirements.txt`; `--submit` uploads them too.
-The kit needs Python 3.12 and nothing else. The arena runs Python 3.12; `bot.py` and `simulate.py` print a warning on any other version.
+The kit needs Python 3.12 and nothing else. `bot.py` and `simulate.py` stop on any other version. Check with `python3 --version`; if it is not 3.12, install 3.12 and use `python3.12` in place of `python3`.
 
 ## Files
 

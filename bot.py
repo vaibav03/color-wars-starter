@@ -47,11 +47,11 @@ KIT_FILES = ("bot.py", "simulate.py", "colorwars.py")    # never uploaded: the s
 SKIP_DIRS = {".git", ".sdlc", ".venv", "venv", "env", "__pycache__", "tools", "node_modules"}
 
 
-def warn_python():
+def require_python():
     if sys.version_info[:2] != (3, 12):
         v = ".".join(map(str, sys.version_info[:3]))
-        print(f"warning: this is Python {v}; the arena runs Python 3.12. Test with 3.12 before you upload.",
-              file=sys.stderr, flush=True)
+        sys.exit(f"Python 3.12 is required (this is Python {v}). Install it from python.org or with "
+                 f"`brew install python@3.12`, then run the kit with python3.12, e.g. python3.12 {sys.argv[0]}")
 
 
 def now():
@@ -417,8 +417,7 @@ def main():
     ap.add_argument("--submit", action="store_true", help="upload your strategy files and exit")
     ap.add_argument("--dry-run", action="store_true", help="practice arena: checks and a 1-minute game")
     a = ap.parse_args()
-    if not (a.login is not None or a.phase or a.watch):            # the warning matters only where the strategy runs
-        warn_python()
+    require_python()
 
     if a.login is not None:
         key = a.login.strip()

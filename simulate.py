@@ -65,11 +65,11 @@ def house_opponent(board, legal, my_crystal, enemy_crystal, reverted):
 OPPONENTS = {"sample": sample_opponent, "random": random_opponent, "house": house_opponent}
 
 
-def warn_python():
+def require_python():
     if sys.version_info[:2] != (3, 12):
         v = ".".join(map(str, sys.version_info[:3]))
-        print(f"warning: this is Python {v}; the arena runs Python 3.12. Test with 3.12 before you upload.",
-              file=sys.stderr, flush=True)
+        sys.exit(f"Python 3.12 is required (this is Python {v}). Install it from python.org or with "
+                 f"`brew install python@3.12`, then run the kit with python3.12, e.g. python3.12 {sys.argv[0]}")
 
 
 def count(owner, who):
@@ -103,7 +103,7 @@ def main():
                     help="draw the board again every N turns (default 10) while the match plays")
     ap.add_argument("--delay", type=float, default=0.15, help="seconds to show each --watch frame")
     a = ap.parse_args()
-    warn_python()
+    require_python()
     random.seed(a.seed)
 
     try:

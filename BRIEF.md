@@ -100,10 +100,10 @@ Three decisions are yours and affect the result.
 
 ## Join the game
 
-You join as your Claude Code account: the ASU account you already use for the course. Nothing else to create. Allow 1 minute.
+You join as your Claude Code account (any account works). Nothing else to create. Allow 1 minute.
 
 1. Open a terminal in the starter kit folder.
-2. Check that Claude Code is logged in with your ASU account (run `claude`, then `/status`; if not, `/login`).
+2. Check that Claude Code is logged in (run `claude`, then `/status`; if not, `/login`).
 3. Run `python3 bot.py --login`. It prints `joined as`, your name on the dashboard, and the link to watch your match.
 4. Run `python3 bot.py --check`. It prints `connected`; your color and crystal appear once BUILD has made the pairings.
 5. Run `python3 bot.py --watch` and leave it running in its own terminal. It reads the phase every 5 seconds and writes `.sdlc/arena-phase.json`.
@@ -164,8 +164,7 @@ Each row is a failure seen in practice rounds or one the setup steps can cause. 
 | What you see | Cause | Fix |
 | --- | --- | --- |
 | `Set your player key first` | The script found no key in `.env` | Run `python3 bot.py --login` |
-| `Log in to Claude Code first` | Claude Code is not logged in on this computer | Run `claude`, type `/login`, sign in with your ASU account |
-| `join failed: use your @asu.edu account` | Claude Code is logged in with another account | `/logout`, then `/login` with your ASU account |
+| `Log in to Claude Code first` | Claude Code is not logged in on this computer | Run `claude`, type `/login`, sign in |
 | `join failed: joining is closed` | BUILD has started | Ask the instructor |
 | `HTTP 401` or `HTTP 403` on `--check` | The key is wrong or not loaded | Run `python3 bot.py --login` again |
 | `HTTP 403` on a move, then `Laptop play is over` | The move is not for your current match, or the round robin has started | The script stops. In the round robin this is expected: your upload plays. In round 0, run `python3 bot.py` again |

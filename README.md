@@ -65,7 +65,7 @@ It prints each check and a live link to the game.
 
 ## Connect to the game server
 
-1. Log in to Claude Code with your ASU account (you use it for the course already).
+1. Log in to Claude Code (any account).
 2. Run `python3 bot.py --login`. It joins the game as your Claude Code account and writes your player key into `.env`. Git ignores `.env`, and the bot never prints the key.
 3. Run `python3 bot.py --check`. It prints `connected`; your color and crystal squares appear once BUILD has made the pairings.
 4. In TESTING, run `python3 bot.py --practice`. It sends one legal move next to your crystal and confirms the server accepts it.

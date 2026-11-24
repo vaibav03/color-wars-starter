@@ -216,7 +216,7 @@ def join_with_miro(config_path, server=None):
     """Join the game as the Claude Code account on this computer (a Miro token in .env also works), save the key."""
     who, token = claude_account(), load_env("MIRO_TOKEN")
     if not who and not token:
-        sys.exit("Log in to Claude Code first: run claude, type /login, sign in with your ASU account. "
+        sys.exit("Log in to Claude Code first: run claude, type /login and sign in. "
                  "Then run python3 bot.py --login again.")
     cfg = load_config(config_path, server)
     try:

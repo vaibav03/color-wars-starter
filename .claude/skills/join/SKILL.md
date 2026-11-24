@@ -7,9 +7,8 @@ Walk the student through joining. Do each step in order.
 
 1. Run `python3 bot.py --login` in the kit folder.
    - `joined as ...`: tell the student their dashboard name and the watch link it printed. Go to step 2.
-   - `Log in to Claude Code first`: ask the student to type `/login` and sign in with their ASU account, then run
+   - `Log in to Claude Code first`: ask the student to type `/login` and sign in, then run
      step 1 again.
-   - `use your @asu.edu account`: ask the student to `/logout`, then `/login` with their ASU account; step 1 again.
    - `joining is closed`: BUILD has started. Tell the student to ask the instructor. Stop.
 2. Run `python3 bot.py --check` and confirm it prints `connected`.
 3. Tell the student the next step: write `strategy.py`, test with `python3 simulate.py --watch`, upload with

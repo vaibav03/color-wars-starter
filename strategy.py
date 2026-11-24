@@ -71,6 +71,26 @@ def _area(square, board):
     return out
 
 
+def _in_center(square):
+    """The central front: columns L to Y, rows 14 to 21."""
+    x, y = parse(square)
+    return 11 <= x <= 24 and 14 <= y <= 21
+
+
+def _flank_map(board, enemy_crystal):
+    """Steps to the enemy crystal through one side lane, with the central front walled off."""
+    if _state["lane"] is None:                        # pick the emptier lane once, then keep it
+        top = sum(o == "enemy" and parse(s)[1] <= 13 for s, o in board.items())
+        bottom = sum(o == "enemy" and parse(s)[1] >= 22 for s, o in board.items())
+        _state["lane"] = "top" if top <= bottom else "bottom"
+    blocked = dict(board)
+    for s in board:
+        x, y = parse(s)
+        if 11 <= x <= 24 and (14 <= y <= 21 or (y >= 22 if _state["lane"] == "top" else y <= 13)):
+            blocked[s] = "wall"
+    return distance_map(blocked, enemy_crystal)
+
+
 def choose(board, legal, my_crystal, enemy_crystal, reverted):
     to_enemy = distance_map(board, enemy_crystal)
     to_home = distance_map(board, my_crystal)
@@ -79,6 +99,7 @@ def choose(board, legal, my_crystal, enemy_crystal, reverted):
     crystal_left = sum(board.get(c) != "me" for c in enemy_crystal)
     skip = set(reverted)
     phase = _phase(board)
+    flank = _flank_map(board, enemy_crystal) if phase == "flank" else {}
 
     def expand_score(s):
         area = _area(s, board)
@@ -117,7 +138,9 @@ def choose(board, legal, my_crystal, enemy_crystal, reverted):
         if s in skip:
             value -= 5
         value -= 1.0 * _recent.count(s)              # stop trading the same square forever
-        return (value, -to_enemy.get(s, 999))
+        if _in_center(s):
+            value -= 3                                # keep off the central front
+        return (value, -flank.get(s, 999), -to_enemy.get(s, 999))
 
     pick = max(legal, key=expand_score if phase == "expand" else score)
     _recent.append(pick)

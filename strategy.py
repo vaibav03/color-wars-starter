@@ -27,6 +27,23 @@ from collections import deque
 from colorwars import neighbors, distance_map, parse, name
 
 _recent = deque(maxlen=12)     # our last picks, to break back-and-forth loops
+_state = {"moves": 0, "phase": "expand", "lane": None}
+
+EXPAND_SQUARES = 60            # switch to the raid once we own this many squares...
+EXPAND_MOVES = 90              # ...or after this many moves, whichever comes first
+HOME_RADIUS = 7                # the expand half stays within this many steps of our crystal
+
+
+def _phase(board):
+    """'expand' in the first half, 'flank' in the second. Resets on a fresh match."""
+    mine = sum(o == "me" for o in board.values())
+    if mine <= 6 and _state["moves"] > 10:           # a new match started: forget the old one
+        _state.update(moves=0, phase="expand", lane=None)
+        _recent.clear()
+    _state["moves"] += 1
+    if _state["phase"] == "expand" and (mine >= EXPAND_SQUARES or _state["moves"] > EXPAND_MOVES):
+        _state["phase"] = "flank"
+    return _state["phase"]
 
 
 def _connected(board, crystal, who):
@@ -61,6 +78,21 @@ def choose(board, legal, my_crystal, enemy_crystal, reverted):
     enemy_count = len(enemy_now)
     crystal_left = sum(board.get(c) != "me" for c in enemy_crystal)
     skip = set(reverted)
+    phase = _phase(board)
+
+    def expand_score(s):
+        area = _area(s, board)
+        d = to_home.get(s, 99)
+        value = float(len(area)) * 1.5                # squares we gain (a bomb gains many)
+        own = sum(board.get(n) == "me" for n in neighbors(s))
+        value += 0.5 * own                            # thick blob, no thin fingers
+        value -= 0.4 * d                              # fill near home first
+        if d > HOME_RADIUS:
+            value -= 20                               # stay home in the first half
+        if s in skip:
+            value -= 5
+        value -= 1.0 * _recent.count(s)
+        return (value, -d)
 
     def score(s):
         area = _area(s, board)
@@ -87,6 +119,6 @@ def choose(board, legal, my_crystal, enemy_crystal, reverted):
         value -= 1.0 * _recent.count(s)              # stop trading the same square forever
         return (value, -to_enemy.get(s, 999))
 
-    pick = max(legal, key=score)
+    pick = max(legal, key=expand_score if phase == "expand" else score)
     _recent.append(pick)
     return pick

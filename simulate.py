@@ -21,18 +21,19 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from colorwars import (ALL_SQUARES, COLS, ROWS, name, capture, distance_map, legal_squares,
                        neighbors, safe_choose, threat, view)
 
-CRYSTALS = {"red": ["B17", "B18", "C17", "C18"], "blue": ["AH17", "AH18", "AI17", "AI18"]}
+CRYSTALS = {"red": ["E29", "D30", "E30", "F30", "E31"], "blue": ["AF4", "AE5", "AF5", "AG5", "AF6"]}
+WALLS = ("R7", "S7", "F8", "Q8", "T8", "G9", "P9", "U9", "O10", "V10", "L13", "Y13", "K14", "Z14", "J15", "AA15",
+         "I16", "AB16", "H17", "AC17", "H18", "AC18", "I19", "AB19", "J20", "AA20", "K21", "Z21", "L22", "Y22",
+         "O25", "V25", "P26", "U26", "AD26", "Q27", "T27", "AE27", "R28", "S28")
+BOMBS = ("R4", "S4", "G7", "H8", "U14", "F17", "R17", "S17", "R18", "S18", "AE18", "P21", "AC27", "AD28", "R31", "S31")
 
 
 def new_board():
+    """The match map (same as the game server's): label -> 'red'|'blue'|'empty'|'wall'|'bomb'."""
     owner = {s: "empty" for s in ALL_SQUARES}
-    for x in (7, 28):                                   # columns H and AC
-        for y in list(range(4, 13)) + list(range(23, 32)):
-            owner[name((x, y))] = "wall"
-    for x in (17, 18):                                  # columns R and S
-        for y in (15, 16, 19, 20):
-            owner[name((x, y))] = "wall"
-    for s in ("R3", "S3", "L9", "Y9", "G17", "AD17", "L26", "Y26", "R32", "S32"):
+    for s in WALLS:
+        owner[s] = "wall"
+    for s in BOMBS:
         owner[s] = "bomb"
     for who, crystal in CRYSTALS.items():
         for s in crystal:
@@ -254,6 +255,7 @@ def main():
             print(f"turn {turn:4d}  you {count(owner, me):4d}  opponent {count(owner, foe):4d}")
 
     mine, theirs = count(owner, me), count(owner, foe)
+    captured = winner is not None                   # the stall note below is only for matches that ran out of turns
     if not winner:
         if mine != theirs:
             winner, reason = (me if mine > theirs else foe), "more territory at the end"
@@ -267,7 +269,7 @@ def main():
         frame(owner, me, foe, turn, a.watch, 0)
     elif a.map:
         draw(owner, me)
-    if not winner and turn - last_change >= 50:
+    if not captured and turn - last_change >= 50:
         print(f"note: the territory counts did not change after turn {last_change}: neither side gained ground. "
               f"Run with --map to see where the front line is stuck.")
     if skipped:

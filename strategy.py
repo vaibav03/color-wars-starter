@@ -5,8 +5,8 @@ The starter kit calls choose() once per second and paints the square you return.
 Inputs
   board          dict: every square label -> "me", "enemy", "empty", "wall" or "bomb"
   legal          list: the squares you can capture right now
-  my_crystal     list: your four crystal squares
-  enemy_crystal  list: your opponent's four crystal squares
+  my_crystal     list: your five crystal squares
+  enemy_crystal  list: your opponent's five crystal squares
   reverted       list: squares the referee took back from you since the last board read
 
 Return one label from `legal`, for example "G17".

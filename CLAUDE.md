@@ -48,7 +48,12 @@ Run all tests: `python3 -m unittest discover -s tests`. Run one test: `python3 -
 
 `simulate.py` exits 0 after any finished match, won or lost, and 1 when `choose` raised an error or returned an illegal square. A run is clean when it ends with a `RESULT` line and prints no line that starts with `KIT-ERROR` or `KIT-WARN`. A lost match is not a failed check; say the result to the student.
 
-Do not use `--watch` or `--web` as a check: they do not end by themselves.
+Every time you simulate a match, also open it in the browser so the student watches it play, turn by turn:
+
+- Run the same command with `--web` added, for example `python3 simulate.py --web` or `python3 simulate.py --side blue --opponent house --web`.
+- Run it in the background: it serves the page until it is stopped and does not end by itself. Stop the previous `--web` run first.
+- It opens http://localhost:8000 in the browser by itself. Tell the student the page is open and say the result in one plain sentence.
+- Use the run without `--web` for the exit-code check. Do not use `--watch` or `--web` as a check.
 
 ## Course artifacts
 

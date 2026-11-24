@@ -20,8 +20,9 @@ Walk the student through joining. Do each step in order.
    the workflow's checks. The student starts `python3 bot.py` themselves before round 0, not you.
 
 Most students are not technical, so show results in the browser, not only in the terminal:
-- To test a strategy, run `python3 simulate.py --web`. It opens the match replay in the browser. Tell the student
-  the result in one plain sentence (won or lost, and the score).
+- Every time you simulate a match, add `--web` (for example `python3 simulate.py --web`) and run it in the
+  background: it does not end by itself. It opens the match in the browser, and the student watches it play turn
+  by turn. Tell the student the page is open, and the result in one plain sentence (won or lost, and the score).
 - `python3 bot.py --submit` opens the student's dashboard page after `upload passed`. Tell the student in plain
   words that their strategy is uploaded; the page shows a green line that says so.
 

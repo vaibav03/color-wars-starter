@@ -26,7 +26,7 @@ No design.md (short flow); the success criteria come from intent.md.
 | Win vs house as Red and Blue | the two `--opponent house` commands | passed |
 | No KIT-ERROR / KIT-WARN line | all six commands | passed (none printed, exit code 0) |
 | Each `choose()` call under 0.5 s | not a registered command | not run in this step (Build measured max 0.0035 s) |
-| `python3 bot.py --submit` prints `upload passed` | not a registered command | not run in this step (printed `upload passed` during Build) |
+| `python3 bot.py --submit` prints `upload passed` | not a registered command | not run in this step (printed `upload passed`, version 2, just before it) |
 
 ## Summary
 All six registered simulator matches end in `RESULT win` with exit code 0 and no KIT-ERROR or KIT-WARN line. The time per call and the upload are not registered checks, so this step did not rerun them; both passed during the Build. The practice move (`python3 bot.py --practice`) is still to do once the phase is TESTING.
